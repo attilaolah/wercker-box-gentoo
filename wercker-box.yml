@@ -1,0 +1,34 @@
+name: gentoo
+version: 0.0.1
+inherits: wercker/ubuntu12.04-webessentials@1.0.4
+type: main
+platform: ubuntu@12.04
+description: Wercker box that contains a Gentoo chroot under /gentoo
+keywords:
+  - gentoo
+script: |
+  arch="amd64"
+  version="20141204"
+  root="/gentoo"
+
+  echo "Entering ${root}…"
+  sudo mkdir ${root}
+  pushd ${root}
+
+  echo "Stage3 setup…"
+  sudo wget http://distfiles.gentoo.org/releases/${arch}/autobuilds/current-stage3-${arch}/stage3-${arch}-${version}.tar.bz2
+  sudo tar xjpf stage3-${arch}-${version}.tar.bz2
+  sudo rm stage3-${arch}-${version}.tar.bz2
+
+  echo "CHROOT setup…"
+  sudo cp /etc/resolv.conf ${root}/etc
+
+  echo "Portage tree setup…"
+  sudo mkdir ${root}/usr/portage
+  sudo chroot ${root} emerge-webrsync
+
+  echo "Install crossdev…"
+  sudo chroot ${root} emerge -q crossdev
+
+  echo "Exiting…"
+  popd
