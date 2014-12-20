@@ -1,5 +1,5 @@
 name: gentoo
-version: 0.0.1
+version: 1.0.20141204
 inherits: wercker/ubuntu12.04-webessentials@1.0.4
 type: main
 platform: ubuntu@12.04
@@ -9,26 +9,25 @@ keywords:
 script: |
   arch="amd64"
   version="20141204"
+  stage3="stage3-${arch}-${version}.tar.bz2"
+  stage3url="http://distfiles.gentoo.org/releases/${arch}/autobuilds/current-stage3-${arch}/${stage3}"
   root="/gentoo"
 
-  echo "Entering ${root}…"
+  # Creating ${root}
   sudo mkdir ${root}
   pushd ${root}
 
-  echo "Stage3 setup…"
-  sudo wget http://distfiles.gentoo.org/releases/${arch}/autobuilds/current-stage3-${arch}/stage3-${arch}-${version}.tar.bz2
-  sudo tar xjpf stage3-${arch}-${version}.tar.bz2
-  sudo rm stage3-${arch}-${version}.tar.bz2
+  # Stage3 setup
+  sudo wget --progress=dot ${stage3url}
+  sudo tar xjpf ${stage3}
+  sudo rm ${stage3}
 
-  echo "CHROOT setup…"
+  # CHROOT setup
   sudo cp /etc/resolv.conf ${root}/etc
 
-  echo "Portage tree setup…"
+  # Portage tree setup
   sudo mkdir ${root}/usr/portage
   sudo chroot ${root} emerge-webrsync
 
-  echo "Install crossdev…"
-  sudo chroot ${root} emerge -q crossdev
-
-  echo "Exiting…"
+  # Leaving ${root}
   popd
