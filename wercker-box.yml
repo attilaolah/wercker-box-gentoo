@@ -1,5 +1,5 @@
 name: gentoo
-version: 20141204.0.0
+version: 20141204.1.0
 inherits: wercker/ubuntu12.04-webessentials@1.0.4
 type: main
 platform: ubuntu@12.04
@@ -10,24 +10,28 @@ script: |
   arch="amd64"
   version="20141204"
   stage3="stage3-${arch}-${version}.tar.bz2"
-  stage3url="http://distfiles.gentoo.org/releases/${arch}/autobuilds/current-stage3-${arch}/${stage3}"
+  stage3_url="http://distfiles.gentoo.org/releases/${arch}/autobuilds/current-stage3-${arch}/${stage3}"
   root="/gentoo"
 
   # Creating ${root}
-  sudo mkdir ${root}
-  pushd ${root}
+  sudo mkdir "${root}"
+  pushd "${root}"
 
   # Stage3 setup
-  sudo wget --progress=dot ${stage3url}
-  sudo tar xjpf ${stage3}
-  sudo rm ${stage3}
+  sudo wget --quiet "${stage3_url}"
+  sudo tar xjpf "${stage3}"
+  sudo rm "${stage3}"
 
   # CHROOT setup
-  sudo cp /etc/resolv.conf ${root}/etc
+  sudo cp "/etc/resolv.conf" "${root}/etc"
+
+  # Create a make.conf
+  sudo mkdir -p "${root}/etc/portage"
+  sudo cp "${WERCKER_SOURCE_DIR}/make.conf" "${root}/etc/portage"
 
   # Portage tree setup
-  sudo mkdir ${root}/usr/portage
-  sudo chroot ${root} emerge-webrsync
+  sudo mkdir -p "${root}/usr/portage"
+  sudo chroot "${root}" emerge-webrsync
 
   # Leaving ${root}
   popd
