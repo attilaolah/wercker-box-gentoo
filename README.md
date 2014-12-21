@@ -23,6 +23,34 @@ To run a commnad in the chroot environment, just prefix it with `sudo chroot
 sudo chroot /gentoo emerge -q crossdev
 ```
 
+There is even a convenience step, [`attilaolah/gentoo`][3], that will run a
+shell script inside the `chroot` environment without much configuration. Use it
+like this:
+
+```yaml
+build:
+  steps:
+    - attilaolah/gentoo:
+        command: echo "This is a command."
+    - attilaolah/gentoo:
+        command: |
+          echo "This is a multi-line command."
+          echo "It will all be executed by a single shell call."
+```
+
+There is another convenience step, [`attilaolah/emerge`][4], that calls
+`emerge` under the chroot. Use it like this:
+
+```yaml
+build:
+  steps:
+    - attilaolah/emerge:
+        atom: figlet
+    - attilaolah/emerge:
+        atom: "=dev-lang/python-3.4.2"
+        use: "wininst -examples -doc"
+```
+
 ## Portage updates
 
 The Portage tree is synced when Wercker publishes this box to the registry. If
@@ -46,4 +74,6 @@ available [in autobuilds][1], just send me a pull request and I'll merge it.
 
 [0]: https://app.wercker.com/#applications/54944cfd6b3ba8733da381b9/tab/details
 [1]: http://distfiles.gentoo.org/releases/amd64/autobuilds/current-stage3-amd64/
-[2]: https://github.com/attilaolah/wercker-box-gentoo-crossdev
+[2]: //github.com/attilaolah/wercker-box-gentoo-crossdev
+[3]: //github.com/attilaolah/wercker-step-gentoo
+[3]: //github.com/attilaolah/wercker-step-emerge
