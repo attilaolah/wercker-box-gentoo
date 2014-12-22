@@ -1,5 +1,5 @@
 name: gentoo
-version: 20141204.2.2
+version: 20141204.2.3
 inherits: wercker/ubuntu12.04-webessentials@1.0.4
 type: main
 platform: ubuntu@12.04
@@ -27,6 +27,7 @@ script: |
   sudo cp "${WERCKER_SOURCE_DIR}/locale.gen" "${root}/etc"
   sudo cp "${WERCKER_SOURCE_DIR}/02locale" "${root}/etc/env.d"
   sudo chroot "${root}" locale-gen
+  sudo chroot "${root}" env-update
 
   # Create a make.conf
   sudo mkdir -p "${root}/etc/portage"
